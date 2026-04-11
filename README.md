@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nickthorpe71/QuotaBar/releases/latest"><img src="https://img.shields.io/github/v/release/nickthorpe71/QuotaBar?style=flat-square" alt="Release"></a>
-  <a href="https://github.com/nickthorpe71/QuotaBar/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nickthorpe71/QuotaBar?style=flat-square" alt="License"></a>
+  <a href="https://github.com/SemiStack/QuotaBar/releases/latest"><img src="https://img.shields.io/github/v/release/SemiStack/QuotaBar?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/SemiStack/QuotaBar/blob/main/LICENSE"><img src="https://img.shields.io/github/license/SemiStack/QuotaBar?style=flat-square" alt="License"></a>
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B-blue?style=flat-square" alt="Platform">
   <img src="https://img.shields.io/badge/swift-6.0-orange?style=flat-square" alt="Swift">
 </p>
@@ -60,7 +60,7 @@ If you use multiple AI coding assistants and want to track how much quota you ha
 
 #### Download Release
 
-1. Go to [Releases](https://github.com/nickthorpe71/QuotaBar/releases/latest)
+1. Go to [Releases](https://github.com/SemiStack/QuotaBar/releases/latest)
 2. Download `QuotaBar.zip`
 3. Unzip and drag `QuotaBar.app` to your Applications folder
 4. Open QuotaBar — it will appear in your menu bar
@@ -76,7 +76,7 @@ brew install --cask quotabar
 Requires **macOS 14+** and **Swift 6.0+** (Xcode 16+).
 
 ```bash
-git clone https://github.com/nickthorpe71/QuotaBar.git
+git clone https://github.com/SemiStack/QuotaBar.git
 cd QuotaBar
 swift build -c release
 # Binary at .build/release/QuotaBar
@@ -192,7 +192,7 @@ QuotaBar 是一款轻量级 macOS 菜单栏应用，用于实时监控你的 AI 
 
 #### 下载安装包
 
-1. 前往 [Releases 页面](https://github.com/nickthorpe71/QuotaBar/releases/latest)
+1. 前往 [Releases 页面](https://github.com/SemiStack/QuotaBar/releases/latest)
 2. 下载 `QuotaBar.zip`
 3. 解压后将 `QuotaBar.app` 拖入"应用程序"文件夹
 4. 打开 QuotaBar — 菜单栏会出现图标
@@ -208,7 +208,7 @@ brew install --cask quotabar
 需要 **macOS 14+** 和 **Swift 6.0+**（Xcode 16+）。
 
 ```bash
-git clone https://github.com/nickthorpe71/QuotaBar.git
+git clone https://github.com/SemiStack/QuotaBar.git
 cd QuotaBar
 swift build -c release
 # 可执行文件位于 .build/release/QuotaBar
