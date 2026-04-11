@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Build Release
+        run: swift build -c release
+
+      - name: Create App Bundle
+        run: |
+          APP_DIR="QuotaBar.app/Contents/MacOS"
+          mkdir -p "$APP_DIR"
+          mkdir -p "QuotaBar.app/Contents/Resources"
+
+          cp .build/release/QuotaBar "$APP_DIR/"
+
+          cat > QuotaBar.app/Contents/Info.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleExecutable</key>
+            <string>QuotaBar</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.quotabar.app</string>
+            <key>CFBundleName</key>
+            <string>QuotaBar</string>
+            <key>CFBundleVersion</key>
+            <string>${GITHUB_REF_NAME#v}</string>
+            <key>CFBundleShortVersionString</key>
+            <string>${GITHUB_REF_NAME#v}</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            <key>LSMinimumSystemVersion</key>
+            <string>14.0</string>
+            <key>LSUIElement</key>
+            <true/>
+            <key>NSHighResolutionCapable</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+
+          # Copy icon if available
+          if [ -f Assets/Brand/app-icon-1024.png ]; then
+            cp Assets/Brand/app-icon-1024.png QuotaBar.app/Contents/Resources/
+          fi
+
+      - name: Create ZIP Archive
+        run: |
+          ditto -c -k --keepParent QuotaBar.app QuotaBar-${{ github.ref_name }}-macOS.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            QuotaBar-${{ github.ref_name }}-macOS.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false

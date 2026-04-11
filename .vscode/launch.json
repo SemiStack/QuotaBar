@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:QuotaBar}",
+            "name": "Debug QuotaBar",
+            "target": "QuotaBar",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug QuotaBar"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:QuotaBar}",
+            "name": "Release QuotaBar",
+            "target": "QuotaBar",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release QuotaBar"
+        }
+    ]
+}
