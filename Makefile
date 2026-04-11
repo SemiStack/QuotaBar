@@ -13,9 +13,7 @@ install: release
 	@mkdir -p QuotaBar.app/Contents/MacOS
 	@mkdir -p QuotaBar.app/Contents/Resources
 	@cp .build/release/QuotaBar QuotaBar.app/Contents/MacOS/
-	@if [ -f Assets/Brand/app-icon-1024.png ]; then \
-		cp Assets/Brand/app-icon-1024.png QuotaBar.app/Contents/Resources/; \
-	fi
+	@cp Assets/Brand/AppIcon.icns QuotaBar.app/Contents/Resources/AppIcon.icns
 	@printf '%s\n' \
 		'<?xml version="1.0" encoding="UTF-8"?>' \
 		'<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' \
@@ -29,6 +27,8 @@ install: release
 		'  <string>QuotaBar</string>' \
 		'  <key>CFBundlePackageType</key>' \
 		'  <string>APPL</string>' \
+		'  <key>CFBundleIconFile</key>' \
+		'  <string>AppIcon</string>' \
 		'  <key>LSMinimumSystemVersion</key>' \
 		'  <string>14.0</string>' \
 		'  <key>LSUIElement</key>' \
@@ -37,6 +37,7 @@ install: release
 		'  <true/>' \
 		'</dict>' \
 		'</plist>' > QuotaBar.app/Contents/Info.plist
+	@codesign --force --deep -s - QuotaBar.app
 	@echo "✅ QuotaBar.app created. Drag it to /Applications or run: cp -r QuotaBar.app /Applications/"
 
 clean:

@@ -33,6 +33,7 @@ jobs:
           mkdir -p "QuotaBar.app/Contents/Resources"
 
           cp .build/release/QuotaBar "$APP_DIR/"
+          cp Assets/Brand/AppIcon.icns QuotaBar.app/Contents/Resources/AppIcon.icns
 
           cat > QuotaBar.app/Contents/Info.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -51,6 +52,8 @@ jobs:
             <string>${APP_VERSION}</string>
             <key>CFBundlePackageType</key>
             <string>APPL</string>
+            <key>CFBundleIconFile</key>
+            <string>AppIcon</string>
             <key>LSMinimumSystemVersion</key>
             <string>14.0</string>
             <key>LSUIElement</key>
@@ -61,9 +64,8 @@ jobs:
           </plist>
           EOF
 
-          if [ -f Assets/Brand/app-icon-1024.png ]; then
-            cp Assets/Brand/app-icon-1024.png QuotaBar.app/Contents/Resources/
-          fi
+      - name: Ad-hoc Codesign
+        run: codesign --force --deep -s - QuotaBar.app
 
       - name: Create ZIP Archive
         run: |

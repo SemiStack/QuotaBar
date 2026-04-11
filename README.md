@@ -61,9 +61,11 @@ If you use multiple AI coding assistants and want to track how much quota you ha
 #### Download Release
 
 1. Go to [Releases](https://github.com/SemiStack/QuotaBar/releases/latest)
-2. Download `QuotaBar.zip`
+2. Download `QuotaBar-macOS.zip`
 3. Unzip and drag `QuotaBar.app` to your Applications folder
-4. Open QuotaBar — it will appear in your menu bar
+4. **First launch**: Right-click `QuotaBar.app` → click **Open** → click **Open** in the dialog
+   > macOS Gatekeeper may block unsigned apps downloaded from the internet. Right-click → Open bypasses this for the specific app. Alternatively, run: `xattr -cr /Applications/QuotaBar.app`
+5. QuotaBar will appear in your menu bar
 
 #### Homebrew
 
@@ -194,9 +196,11 @@ QuotaBar 是一款轻量级 macOS 菜单栏应用，用于实时监控你的 AI 
 #### 下载安装包
 
 1. 前往 [Releases 页面](https://github.com/SemiStack/QuotaBar/releases/latest)
-2. 下载 `QuotaBar.zip`
+2. 下载 `QuotaBar-macOS.zip`
 3. 解压后将 `QuotaBar.app` 拖入"应用程序"文件夹
-4. 打开 QuotaBar — 菜单栏会出现图标
+4. **首次打开**：右键点击 `QuotaBar.app` → 选择 **打开** → 在弹窗中再次点击 **打开**
+   > macOS 会阻止从互联网下载的未签名应用。右键打开可以绕过此限制。也可以在终端运行：`xattr -cr /Applications/QuotaBar.app`
+5. QuotaBar 会出现在菜单栏
 
 #### Homebrew 安装
 
