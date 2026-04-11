@@ -237,7 +237,7 @@ struct CodexOAuthClient: Sendable {
 
         Log.info("Codex OAuth: 打开授权页面 \(authorizeURL.absoluteString)")
         #if canImport(AppKit)
-        await MainActor.run { NSWorkspace.shared.open(authorizeURL) }
+        await MainActor.run { _ = NSWorkspace.shared.open(authorizeURL) }
         #endif
 
         let code = try await callbackServer.waitForCode(expectedState: state)
