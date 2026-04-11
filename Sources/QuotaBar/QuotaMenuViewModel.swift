@@ -926,7 +926,7 @@ final class QuotaMenuViewModel: ObservableObject {
             || normalized.contains("http 403")
     }
 
-    private static func cardSort(lhs: QuotaCard, rhs: QuotaCard) -> Bool {
+    private nonisolated static func cardSort(lhs: QuotaCard, rhs: QuotaCard) -> Bool {
         if lhs.isCodexUnavailable != rhs.isCodexUnavailable {
             return rhs.isCodexUnavailable
         }
@@ -939,7 +939,7 @@ final class QuotaMenuViewModel: ObservableObject {
         return lhs.title.localizedStandardCompare(rhs.title) == .orderedAscending
     }
 
-    private static func primaryRemaining(for card: QuotaCard) -> Int {
+    private nonisolated static func primaryRemaining(for card: QuotaCard) -> Int {
         card.primaryStatusRow?.remainingPercent ?? -1
     }
 
