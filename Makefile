@@ -16,28 +16,27 @@ install: release
 	@if [ -f Assets/Brand/app-icon-1024.png ]; then \
 		cp Assets/Brand/app-icon-1024.png QuotaBar.app/Contents/Resources/; \
 	fi
-	@cat > QuotaBar.app/Contents/Info.plist << 'PLIST'
-	<?xml version="1.0" encoding="UTF-8"?>
-	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-	<plist version="1.0">
-	<dict>
-		<key>CFBundleExecutable</key>
-		<string>QuotaBar</string>
-		<key>CFBundleIdentifier</key>
-		<string>com.quotabar.app</string>
-		<key>CFBundleName</key>
-		<string>QuotaBar</string>
-		<key>CFBundlePackageType</key>
-		<string>APPL</string>
-		<key>LSMinimumSystemVersion</key>
-		<string>14.0</string>
-		<key>LSUIElement</key>
-		<true/>
-		<key>NSHighResolutionCapable</key>
-		<true/>
-	</dict>
-	</plist>
-	PLIST
+	@printf '%s\n' \
+		'<?xml version="1.0" encoding="UTF-8"?>' \
+		'<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' \
+		'<plist version="1.0">' \
+		'<dict>' \
+		'  <key>CFBundleExecutable</key>' \
+		'  <string>QuotaBar</string>' \
+		'  <key>CFBundleIdentifier</key>' \
+		'  <string>com.quotabar.app</string>' \
+		'  <key>CFBundleName</key>' \
+		'  <string>QuotaBar</string>' \
+		'  <key>CFBundlePackageType</key>' \
+		'  <string>APPL</string>' \
+		'  <key>LSMinimumSystemVersion</key>' \
+		'  <string>14.0</string>' \
+		'  <key>LSUIElement</key>' \
+		'  <true/>' \
+		'  <key>NSHighResolutionCapable</key>' \
+		'  <true/>' \
+		'</dict>' \
+		'</plist>' > QuotaBar.app/Contents/Info.plist
 	@echo "✅ QuotaBar.app created. Drag it to /Applications or run: cp -r QuotaBar.app /Applications/"
 
 clean:

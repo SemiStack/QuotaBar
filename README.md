@@ -68,6 +68,7 @@ If you use multiple AI coding assistants and want to track how much quota you ha
 #### Homebrew
 
 ```bash
+brew tap SemiStack/quotabar
 brew install --cask quotabar
 ```
 
@@ -200,6 +201,7 @@ QuotaBar 是一款轻量级 macOS 菜单栏应用，用于实时监控你的 AI 
 #### Homebrew 安装
 
 ```bash
+brew tap SemiStack/quotabar
 brew install --cask quotabar
 ```
 
