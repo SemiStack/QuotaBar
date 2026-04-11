@@ -244,13 +244,59 @@ struct QuotaMenuView: View {
     }
 
     private var emptyStateSection: some View {
-        inlineStatus(
-            text: viewModel.hasAnyAvailableSource ? "暂时没有可显示额度" : "先完成一次配置",
-            detail: viewModel.hasAnyAvailableSource
-                ? "如果 Claude 官方 App 或 Codex 已登录，试试手动刷新一次。"
-                : "保存 Codex 连接，或登录 Claude 官方 App 后，这里会自动显示额度。",
-            tone: .neutral
-        )
+        Group {
+            if viewModel.hasAnyAvailableSource {
+                inlineStatus(
+                    text: "暂时没有可显示额度",
+                    detail: "如果 Claude 官方 App 或 Codex 已登录，试试手动刷新一次。",
+                    tone: .neutral
+                )
+            } else {
+                onboardingCard
+            }
+        }
+    }
+
+    private var onboardingCard: some View {
+        Button(action: onShowSettings) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(healthyAccent)
+
+                    Text("添加 AI 账号")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.primary)
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.tertiary)
+                }
+
+                Text("点击进入设置，添加 Copilot / Claude / Codex / Gemini 账号，即可开始监控额度。")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(listContainerShape.fill(listContainerBackground))
+            .overlay(
+                listContainerShape.stroke(healthyAccent.opacity(0.3), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            if hovering {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
     }
 
     private var summaryListSection: some View {

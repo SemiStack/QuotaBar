@@ -16,6 +16,14 @@
   <img src="https://img.shields.io/badge/swift-6.0-orange?style=flat-square" alt="Swift">
 </p>
 
+<p align="center">
+  <img src="docs/screenshots/quotabar-overview.png" width="380" alt="QuotaBar Overview">
+</p>
+
+<p align="center">
+  <sub>▲ 在菜单栏一览所有 AI 服务的额度状态 / Monitor all your AI service quotas from the menu bar</sub>
+</p>
+
 ---
 
 [English](#english) | [中文](#中文)
@@ -29,6 +37,16 @@
 QuotaBar is a lightweight macOS menu bar application that monitors your AI service quota usage in real time. It supports **GitHub Copilot**, **Claude (Anthropic)**, **Codex (OpenAI)**, and **Google Gemini** — all in one compact panel.
 
 If you use multiple AI coding assistants and want to track how much quota you have left at a glance, QuotaBar is for you.
+
+<p align="center">
+  <img src="docs/screenshots/quotabar-copilot.png" width="375" alt="QuotaBar Copilot Detail">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/quotabar-detail.png" width="375" alt="QuotaBar Multi-Account Detail">
+</p>
+
+<p align="center">
+  <sub>▲ Left: Expand a provider to see detailed quota breakdown · Right: Multi-account support with color-coded progress bars</sub>
+</p>
 
 ### Features
 
@@ -164,6 +182,16 @@ swift build -c release
 QuotaBar 是一款轻量级 macOS 菜单栏应用，用于实时监控你的 AI 服务额度用量。支持 **GitHub Copilot**、**Claude (Anthropic)**、**Codex (OpenAI)** 和 **Google Gemini** — 所有额度一目了然。
 
 如果你同时使用多个 AI 编程助手，想随时了解剩余额度，QuotaBar 就是你需要的工具。
+
+<p align="center">
+  <img src="docs/screenshots/quotabar-copilot.png" width="375" alt="QuotaBar Copilot 详情">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/quotabar-detail.png" width="375" alt="QuotaBar 多账号详情">
+</p>
+
+<p align="center">
+  <sub>▲ 左：展开查看详细额度 · 右：多账号支持，彩色进度条一目了然</sub>
+</p>
 
 ### 功能特性
 
