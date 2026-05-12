@@ -122,7 +122,7 @@ struct GeminiOAuthClient: Sendable {
         ])
 
         // Check ~/.nvm paths
-        let home = fm.homeDirectoryForCurrentUser.path
+        let home = NSHomeDirectory()
         let nvmDir = "\(home)/.nvm/versions/node"
         if let nodeDirs = try? fm.contentsOfDirectory(atPath: nvmDir) {
             for dir in nodeDirs.sorted().reversed() {
@@ -196,6 +196,7 @@ struct GeminiOAuthClient: Sendable {
     }
 
     private func runShellCommand(_ command: String) throws -> String {
+        #if canImport(AppKit)
         let process = Process()
         let pipe = Pipe()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
@@ -206,6 +207,9 @@ struct GeminiOAuthClient: Sendable {
         process.waitUntilExit()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         return String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        #else
+        return ""
+        #endif
     }
 
     // MARK: - Full Login Flow

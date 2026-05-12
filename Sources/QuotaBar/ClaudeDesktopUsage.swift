@@ -139,7 +139,7 @@ struct ClaudeDesktopSession: Sendable {
 }
 
 struct ClaudeDesktopAuthStore: Sendable {
-    private let cookiesURL = FileManager.default.homeDirectoryForCurrentUser
+    private let cookiesURL = URL(fileURLWithPath: NSHomeDirectory())
         .appendingPathComponent("Library/Application Support/Claude/Cookies")
     private let safeStorageService = "Claude Safe Storage"
     private let safeStorageAccount = "Claude Key"

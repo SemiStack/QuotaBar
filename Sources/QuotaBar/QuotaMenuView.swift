@@ -806,7 +806,7 @@ struct QuotaMenuView: View {
 
     private func planTint(for card: QuotaCard) -> Color {
         switch card.planLabel.lowercased() {
-        case "plus", "pro", "max", "team":
+        case "plus", "pro", "pro +", "pro+", "max", "team", "business":
             return healthyAccent
         case "enterprise":
             return warningAccent

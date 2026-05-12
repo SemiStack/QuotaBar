@@ -5,12 +5,16 @@ final class AccountStoreTests: XCTestCase {
 
     private var testDirectory: URL!
     private var storageURL: URL!
+    private var legacyStorageURL: URL!
 
     override func setUp() {
         super.setUp()
         testDirectory = FileManager.default.temporaryDirectory
             .appendingPathComponent("AccountStoreTests-\(UUID().uuidString)", isDirectory: true)
         storageURL = testDirectory.appendingPathComponent("accounts.json", isDirectory: false)
+        legacyStorageURL = testDirectory
+            .appendingPathComponent("SemiQuotaBar", isDirectory: true)
+            .appendingPathComponent("accounts.json", isDirectory: false)
     }
 
     override func tearDown() {
@@ -103,6 +107,35 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(copilotAccounts.count, 1)
         XCTAssertTrue(geminiAccounts[0].isActive)
         XCTAssertTrue(copilotAccounts[0].isActive)
+    }
+
+    func testAddAccountWithSameIDRefreshesExistingCredentials() async throws {
+        let store = makeStore()
+        let first = makeAccount(
+            id: "copilot-oauth-SemiStack",
+            provider: .copilot,
+            login: "SemiStack",
+            accessToken: "old_token",
+            isActive: true,
+            createdAt: Date(timeIntervalSince1970: 100)
+        )
+        let refreshed = makeAccount(
+            id: "copilot-oauth-SemiStack",
+            provider: .copilot,
+            login: "SemiStack",
+            accessToken: "new_token",
+            isActive: true,
+            createdAt: Date(timeIntervalSince1970: 200)
+        )
+
+        try await store.addAccount(first)
+        try await store.addAccount(refreshed)
+
+        let accounts = await store.accounts(for: .copilot)
+        XCTAssertEqual(accounts.count, 1)
+        XCTAssertEqual(accounts[0].accessToken, "new_token")
+        XCTAssertEqual(accounts[0].createdAt.timeIntervalSince1970, 100, accuracy: 0.1)
+        XCTAssertTrue(accounts[0].isActive)
     }
 
     // MARK: - Remove
@@ -215,6 +248,63 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(loaded[0].email, "a@b.com")
         XCTAssertEqual(loaded[0].accessToken, "tok_abc")
         XCTAssertTrue(loaded[0].isActive)
+    }
+
+    func testLegacySemiQuotaBarStoreMigratesOnFirstLoad() async throws {
+        try FileManager.default.createDirectory(
+            at: legacyStorageURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+
+        let legacyAccount = makeAccount(
+            id: "copilot-oauth-SemiStack",
+            provider: .copilot,
+            login: "SemiStack",
+            accessToken: "legacy_token",
+            isActive: true
+        )
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(AccountStoreData(accounts: [legacyAccount]))
+        try data.write(to: legacyStorageURL)
+
+        let store = AccountStore(storageURL: storageURL, legacyStorageURL: legacyStorageURL)
+        let loaded = await store.accounts(for: .copilot)
+
+        XCTAssertEqual(loaded.count, 1)
+        XCTAssertEqual(loaded[0].accessToken, "legacy_token")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: storageURL.path))
+    }
+
+    func testLegacySemiQuotaBarStoreMigratesWhenCurrentStoreExistsButIsEmpty() async throws {
+        try FileManager.default.createDirectory(
+            at: legacyStorageURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+
+        let legacyAccount = makeAccount(
+            id: "copilot-oauth-SemiStack",
+            provider: .copilot,
+            login: "SemiStack",
+            accessToken: "legacy_token",
+            isActive: true
+        )
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        try encoder.encode(AccountStoreData(accounts: [legacyAccount])).write(to: legacyStorageURL)
+        try FileManager.default.createDirectory(
+            at: storageURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try encoder.encode(AccountStoreData(accounts: [])).write(to: storageURL)
+
+        let store = AccountStore(storageURL: storageURL, legacyStorageURL: legacyStorageURL)
+        let loaded = await store.accounts(for: .copilot)
+
+        XCTAssertEqual(loaded.count, 1)
+        XCTAssertEqual(loaded.first?.accessToken, "legacy_token")
     }
 
     func testFilePermissions() async throws {

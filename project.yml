@@ -1,0 +1,88 @@
+name: QuotaBar
+options:
+  bundleIdPrefix: com.semistack.quotabar
+  deploymentTarget:
+    macOS: "14.0"
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    SWIFT_STRICT_CONCURRENCY: minimal
+
+targets:
+  QuotaBar:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources/QuotaBar
+        excludes:
+          - "PlatformBridge.swift"
+      - path: Sources/QuotaBar/PlatformBridge.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.semistack.quotabar
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_NSHumanReadableCopyright: "© SemiStack"
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+
+  QuotaBarIOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      # Shared cross-platform core files
+      - path: Sources/QuotaBar/Models.swift
+      - path: Sources/QuotaBar/AppError.swift
+      - path: Sources/QuotaBar/AppLogger.swift
+      - path: Sources/QuotaBar/AccountStore.swift
+      - path: Sources/QuotaBar/ManagementAPI.swift
+      - path: Sources/QuotaBar/OAuthCallbackServer.swift
+      - path: Sources/QuotaBar/CopilotOAuthClient.swift
+      - path: Sources/QuotaBar/ClaudeOAuthClient.swift
+      - path: Sources/QuotaBar/CodexOAuthClient.swift
+      - path: Sources/QuotaBar/GeminiOAuthClient.swift
+      - path: Sources/QuotaBar/ClaudeDesktopUsage.swift
+      - path: Sources/QuotaBar/CopilotDesktopUsage.swift
+      - path: Sources/QuotaBar/CLICredentialSync.swift
+      - path: Sources/QuotaBar/QuotaMenuViewModel.swift
+      - path: Sources/QuotaBar/PlatformBridge.swift
+      # iOS-specific UI
+      - path: Sources/QuotaBarIOS
+    resources:
+      - path: Sources/QuotaBarIOS/Resources
+        optional: true
+    info:
+      path: Sources/QuotaBarIOS/Info.plist
+      properties:
+        CFBundleDisplayName: QuotaBar
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        LSRequiresIPhoneOS: true
+        UILaunchScreen:
+          UIColorName: ""
+        UIRequiredDeviceCapabilities:
+          - arm64
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.semistack.quotabar.ios
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: W7FSTN8532
+        ENABLE_PREVIEWS: YES

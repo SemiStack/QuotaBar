@@ -126,42 +126,72 @@ final class CopilotOAuthTests: XCTestCase {
         config.protocolClasses = [MockHTTPProtocol.self]
         let session = URLSession(configuration: config)
 
-        let expectation = XCTestExpectation(description: "Request intercepted")
+        let userRequest = XCTestExpectation(description: "User endpoint requested")
+        let billingRequest = XCTestExpectation(description: "Billing endpoint requested")
 
         MockHTTPProtocol.handler = { request in
-            XCTAssertEqual(request.url?.absoluteString, "https://api.github.com/copilot_internal/user")
             XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "token gho_test_token_abc")
-            XCTAssertEqual(request.value(forHTTPHeaderField: "Accept"), "application/json")
             XCTAssertEqual(request.value(forHTTPHeaderField: "User-Agent"), "QuotaBar")
-            expectation.fulfill()
 
-            // Return a valid response so the client doesn't throw on status
-            let responseJSON = """
-            {
-                "login": "testuser",
-                "quota_snapshots": {
-                    "premium_interactions": {
-                        "percent_remaining": 100,
-                        "remaining": 50,
-                        "entitlement": 50
+            switch request.url?.path {
+            case "/copilot_internal/user":
+                XCTAssertEqual(request.value(forHTTPHeaderField: "Accept"), "application/json")
+                userRequest.fulfill()
+
+                let responseJSON = """
+                {
+                    "login": "testuser",
+                    "quota_snapshots": {
+                        "premium_interactions": {
+                            "percent_remaining": 100,
+                            "remaining": 50,
+                            "entitlement": 50
+                        }
                     }
                 }
+                """
+                let response = HTTPURLResponse(
+                    url: request.url!,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(responseJSON.utf8), response)
+            case "/users/testuser/settings/billing/premium_request/usage":
+                XCTAssertEqual(request.value(forHTTPHeaderField: "Accept"), "application/vnd.github+json")
+                billingRequest.fulfill()
+
+                let responseJSON = """
+                {
+                    "usageItems": [
+                        { "grossQuantity": 0 }
+                    ]
+                }
+                """
+                let response = HTTPURLResponse(
+                    url: request.url!,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(responseJSON.utf8), response)
+            default:
+                XCTFail("Unexpected request: \(request.url?.absoluteString ?? "nil")")
+                let response = HTTPURLResponse(
+                    url: request.url ?? URL(string: "https://example.com")!,
+                    statusCode: 500,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(), response)
             }
-            """
-            let response = HTTPURLResponse(
-                url: request.url!,
-                statusCode: 200,
-                httpVersion: nil,
-                headerFields: nil
-            )!
-            return (Data(responseJSON.utf8), response)
         }
 
         let account = makeAccount(login: "testuser", accessToken: "gho_test_token_abc")
         let client = DirectCopilotClient(account: account, session: session)
         _ = try await client.fetchQuotaCard()
 
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [userRequest, billingRequest], timeout: 5)
     }
 
     // MARK: - DirectCopilotClient Success Parsing
@@ -271,13 +301,26 @@ final class CopilotOAuthTests: XCTestCase {
         """
 
         MockHTTPProtocol.handler = { request in
+            if request.url?.path == "/copilot_internal/user" {
+                let response = HTTPURLResponse(
+                    url: request.url!,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(responseJSON.utf8), response)
+            }
+
             let response = HTTPURLResponse(
                 url: request.url!,
-                statusCode: 200,
+                statusCode: 404,
                 httpVersion: nil,
-                headerFields: nil
+                headerFields: [
+                    "X-Accepted-OAuth-Scopes": "user",
+                    "X-OAuth-Scopes": "copilot, read:user",
+                ]
             )!
-            return (Data(responseJSON.utf8), response)
+            return (Data("{}".utf8), response)
         }
 
         let account = makeAccount(login: "octocat", accessToken: "gho_valid_token")
@@ -289,6 +332,242 @@ final class CopilotOAuthTests: XCTestCase {
         XCTAssertEqual(card.planLabel, "FREE")
         XCTAssertEqual(card.windows.count, 1)
         XCTAssertNil(card.errorMessage)
+    }
+
+    func testDirectCopilotClientUsesBillingUsageReportForAuthoritativeConsumption() async throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockHTTPProtocol.self]
+        let session = URLSession(configuration: config)
+
+        let billingRequestSeen = XCTestExpectation(description: "Billing usage endpoint requested")
+        let components = Calendar(identifier: .gregorian).dateComponents([.year, .month], from: Date())
+        let expectedPath = "/users/SemiStack/settings/billing/premium_request/usage"
+        let expectedYear = String(components.year ?? 0)
+        let expectedMonth = String(components.month ?? 0)
+
+        MockHTTPProtocol.handler = { request in
+            guard let url = request.url else {
+                XCTFail("Missing request URL")
+                let fallbackURL = URL(string: "https://example.com")!
+                let response = HTTPURLResponse(
+                    url: fallbackURL,
+                    statusCode: 500,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(), response)
+            }
+
+            switch url.path {
+            case "/copilot_internal/user":
+                let responseJSON = """
+                {
+                    "login": "SemiStack",
+                    "access_type_sku": "plus_monthly_subscriber_quota",
+                    "copilot_plan": "individual_pro",
+                    "quota_reset_date": "2026-05-01",
+                    "quota_reset_date_utc": "2026-05-01T00:00:00.000Z",
+                    "quota_snapshots": {
+                        "premium_interactions": {
+                            "percent_remaining": 89.1,
+                            "quota_remaining": 1336.7,
+                            "remaining": 1336,
+                            "entitlement": 1500
+                        }
+                    }
+                }
+                """
+                let response = HTTPURLResponse(
+                    url: url,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(responseJSON.utf8), response)
+            case expectedPath:
+                let query = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+                XCTAssertEqual(query.first(where: { $0.name == "year" })?.value, expectedYear)
+                XCTAssertEqual(query.first(where: { $0.name == "month" })?.value, expectedMonth)
+                billingRequestSeen.fulfill()
+
+                let responseJSON = """
+                {
+                    "usageItems": [
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "Claude Haiku 4.5",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 2.31,
+                            "discountQuantity": 32.31,
+                            "netQuantity": -30.0
+                        },
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "Claude Opus 4.6",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 138.0,
+                            "discountQuantity": 138.0,
+                            "netQuantity": 0.0
+                        },
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "Claude Opus 4.7",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 7.5,
+                            "discountQuantity": 7.5,
+                            "netQuantity": 0.0
+                        },
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "Claude Sonnet 4.5",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 0.0,
+                            "discountQuantity": 7.5,
+                            "netQuantity": -7.5
+                        },
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "Claude Sonnet 4.6",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 13.0,
+                            "discountQuantity": 13.0,
+                            "netQuantity": 0.0
+                        },
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "GPT-5.4",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 8.0,
+                            "discountQuantity": 8.0,
+                            "netQuantity": 0.0
+                        },
+                        {
+                            "product": "Copilot",
+                            "sku": "Copilot Premium Request",
+                            "model": "GPT-5.4 mini",
+                            "unitType": "requests",
+                            "pricePerUnit": 0.04,
+                            "grossQuantity": 0.66,
+                            "discountQuantity": 0.66,
+                            "netQuantity": 0.0
+                        }
+                    ]
+                }
+                """
+                let response = HTTPURLResponse(
+                    url: url,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(responseJSON.utf8), response)
+            default:
+                XCTFail("Unexpected request: \(url.absoluteString)")
+                let response = HTTPURLResponse(
+                    url: url,
+                    statusCode: 500,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(), response)
+            }
+        }
+
+        let account = makeAccount(login: "SemiStack", accessToken: "gho_valid_token")
+        let client = DirectCopilotClient(account: account, session: session)
+        let card = try await client.fetchQuotaCard()
+
+        await fulfillment(of: [billingRequestSeen], timeout: 5)
+        XCTAssertEqual(card.planLabel, "PRO +")
+        XCTAssertEqual(card.windows.first?.valueText, "86%/206.97")
+        XCTAssertEqual(card.windows.first?.resetLabel, "05/01 · 1500")
+    }
+
+    func testDirectCopilotClientPromptsReloginWhenBillingScopeMissing() async throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockHTTPProtocol.self]
+        let session = URLSession(configuration: config)
+
+        MockHTTPProtocol.handler = { request in
+            guard let url = request.url else {
+                let fallbackURL = URL(string: "https://example.com")!
+                let response = HTTPURLResponse(
+                    url: fallbackURL,
+                    statusCode: 500,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(), response)
+            }
+
+            switch url.path {
+            case "/copilot_internal/user":
+                let responseJSON = """
+                {
+                    "login": "SemiStack",
+                    "access_type_sku": "plus_monthly_subscriber_quota",
+                    "copilot_plan": "individual_pro",
+                    "quota_reset_date": "2026-05-01",
+                    "quota_reset_date_utc": "2026-05-01T00:00:00.000Z",
+                    "quota_snapshots": {
+                        "premium_interactions": {
+                            "percent_remaining": 89.1,
+                            "quota_remaining": 1336.7,
+                            "remaining": 1336,
+                            "entitlement": 1500
+                        }
+                    }
+                }
+                """
+                let response = HTTPURLResponse(
+                    url: url,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(responseJSON.utf8), response)
+            case "/users/SemiStack/settings/billing/premium_request/usage":
+                let response = HTTPURLResponse(
+                    url: url,
+                    statusCode: 404,
+                    httpVersion: nil,
+                    headerFields: [
+                        "X-Accepted-OAuth-Scopes": "user",
+                        "X-OAuth-Scopes": "copilot, read:user",
+                    ]
+                )!
+                return (Data("{}".utf8), response)
+            default:
+                XCTFail("Unexpected request: \(url.absoluteString)")
+                let response = HTTPURLResponse(
+                    url: url,
+                    statusCode: 500,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!
+                return (Data(), response)
+            }
+        }
+
+        let account = makeAccount(login: "SemiStack", accessToken: "gho_legacy_scope_token")
+        let client = DirectCopilotClient(account: account, session: session)
+        let card = try await client.fetchQuotaCard()
+
+        XCTAssertEqual(card.planLabel, "PRO +")
+        XCTAssertEqual(card.subtitle, "重新登录后可同步官网用量")
+        XCTAssertEqual(card.windows.first?.valueText, "89%/163.3")
     }
 
     // MARK: - CopilotOAuthClient HTTP Integration Tests
@@ -308,7 +587,7 @@ final class CopilotOAuthTests: XCTestCase {
             
             if let body = request.httpBody, let bodyString = String(data: body, encoding: .utf8) {
                 XCTAssertTrue(bodyString.contains("client_id=178c6fc778ccc68e1d6a"))
-                XCTAssertTrue(bodyString.contains("scope="))
+                XCTAssertTrue(bodyString.contains("scope=read:user%20user%20copilot"))
                 XCTAssertTrue(bodyString.contains("copilot"))
             } else {
                 XCTFail("Request body is missing")

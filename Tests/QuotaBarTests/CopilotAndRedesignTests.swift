@@ -192,6 +192,28 @@ final class CopilotAndRedesignTests: XCTestCase {
         XCTAssertEqual(card.windows.first?.resetLabel, "05/01 · 300")
     }
 
+    func testCopilotQuotaBuilderMapsProPlusPlanToReadableBadge() {
+        let card = CopilotQuotaBuilder.makeCard(
+            user: CopilotUserResponse(
+                login: "SemiStack",
+                accessTypeSKU: "plus_monthly_subscriber_quota",
+                copilotPlan: "individual_pro",
+                quotaResetDate: "2026-05-01",
+                quotaResetDateUTC: "2026-05-01T00:00:00.000Z",
+                quotaSnapshots: CopilotQuotaSnapshots(
+                    premiumInteractions: CopilotQuotaSnapshot(
+                        percentRemaining: 89.1,
+                        quotaRemaining: 1336.7,
+                        remaining: 1336,
+                        entitlement: 1500
+                    )
+                )
+            )
+        )
+
+        XCTAssertEqual(card.planLabel, "PRO +")
+    }
+
     // MARK: - Hidden Providers
 
     @MainActor

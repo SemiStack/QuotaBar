@@ -1,0 +1,541 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0417CB315C54FBB2129889D2 /* OAuthCallbackServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB88A5652DE851FBBEE5740 /* OAuthCallbackServer.swift */; };
+		0E79DB2F85BB332C354D4ACD /* QuotaMenuSnapshotRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468CA4D755D47DB021249C84 /* QuotaMenuSnapshotRenderer.swift */; };
+		1AC240985F42113E8009E246 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA678189A89543AEF65BED8 /* AppError.swift */; };
+		1BEE90065A825EFA6A54D299 /* QuotaBarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB84C086A950F5214F7F5307 /* QuotaBarApp.swift */; };
+		25327C7C0B82F682F35E953C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434520778DA1FE6557A69DA9 /* Models.swift */; };
+		283E0FEDFBD836A31E32CBB7 /* PlatformBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB0F433875F20256CFEEB0A /* PlatformBridge.swift */; };
+		2A28602FB6C42EA95EB5329D /* ManagementAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419A9E57F030C2DE0D44329F /* ManagementAPI.swift */; };
+		2E5F76B88CC1C685005D79BE /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33E42ECA2C5CDB30C4F539D /* AppLogger.swift */; };
+		2F12DEC1CE59A0F77E4262D7 /* ClaudeDesktopUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23F12EEA5CB2F2EE32F12E2 /* ClaudeDesktopUsage.swift */; };
+		368EF33A20924E03847F4A15 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEC117C629630F9DA46229 /* RootView.swift */; };
+		3A8A47D512EAEEE137A28053 /* GeminiOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3D2260E2D5FE66A08C7A76 /* GeminiOAuthClient.swift */; };
+		409CD5E0C9737A7193A17657 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33E42ECA2C5CDB30C4F539D /* AppLogger.swift */; };
+		46DBA9CE58B6D6900DC38A64 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA678189A89543AEF65BED8 /* AppError.swift */; };
+		51C82D694148DB3CBED20914 /* ClaudeOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0239990D5DEEC1D4E0563C /* ClaudeOAuthClient.swift */; };
+		56531A42C2AC99E33D3ABC35 /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D99F146D682145052576AA /* AccountStore.swift */; };
+		6221AA29CADD1A054057BC85 /* ClaudeOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0239990D5DEEC1D4E0563C /* ClaudeOAuthClient.swift */; };
+		658F7C162ABF61618037870C /* CodexOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F470CFE23E7270E30FF75D /* CodexOAuthClient.swift */; };
+		6B56E57987216BF8EFEA6BE1 /* CopilotOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845916853CD35E2F80B820D6 /* CopilotOAuthClient.swift */; };
+		6D1FE5C9493023002E41B40B /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB66B3D2D73EBCD00B49681 /* Color+Hex.swift */; };
+		6EF50D87ECEB0BA60709877C /* QuotaMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E31C6A56300E5B4DC43FF934 /* QuotaMenuViewModel.swift */; };
+		6FF17166DD50A3F45DD61D13 /* CodexOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F470CFE23E7270E30FF75D /* CodexOAuthClient.swift */; };
+		76657DD561D43770FC0577EC /* QuotaBarIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E528A6B37329FE6D5F2323C /* QuotaBarIOSApp.swift */; };
+		78289FDE390676904CD752C2 /* QuotaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E800DA182757796C3A65D7DB /* QuotaMenuView.swift */; };
+		7ED4206636ED3548DEB39464 /* SettingsPanelPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AC95C258FE92E88800B17 /* SettingsPanelPresentation.swift */; };
+		7F50D41F62F7E9E6EE108C8A /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58CDB64E60AE71A5BB59A78B /* SettingsWindowController.swift */; };
+		81A0DEEB1C9B37BA1D2B26FE /* CopilotOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845916853CD35E2F80B820D6 /* CopilotOAuthClient.swift */; };
+		823E78EE2A300407FD87CB0D /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434520778DA1FE6557A69DA9 /* Models.swift */; };
+		911EFC731ACE29CBE25CAA61 /* BrandIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E3558BAF002442B0AC73CD /* BrandIcon.swift */; };
+		948ED003F9569BE49F7FDA21 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AECF8962B8C10B5E34FF6D /* AccountsView.swift */; };
+		A3F53C2AB8BCC200EA6D08A5 /* QuotaListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E6D1AB52AA21B2A90FE984 /* QuotaListView.swift */; };
+		A9268C9798472AA473F8DB02 /* ManagementAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419A9E57F030C2DE0D44329F /* ManagementAPI.swift */; };
+		AA62E7C6EA3395B47FC62AFE /* StatusBarAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1105F310F26DA6EC92DF537A /* StatusBarAppDelegate.swift */; };
+		BD40B615D4CEDB08E603A7B1 /* CLICredentialSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC04508189604CF1F42FF4D /* CLICredentialSync.swift */; };
+		C390F96F1DCD94293AEF7236 /* SettingsRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB05BEB85F0E08A97E4FE9D /* SettingsRootView.swift */; };
+		C5BFC34CFB1CACF8A21625CB /* GeminiOAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3D2260E2D5FE66A08C7A76 /* GeminiOAuthClient.swift */; };
+		C5EA752E4048ABFA45338053 /* QuotaMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E31C6A56300E5B4DC43FF934 /* QuotaMenuViewModel.swift */; };
+		CAB5C3FE4616E19D21404171 /* CLICredentialSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC04508189604CF1F42FF4D /* CLICredentialSync.swift */; };
+		CAF4367F9EC0008E55007909 /* CopilotDesktopUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B559E79EF6C64FD1D97F9BED /* CopilotDesktopUsage.swift */; };
+		D45D2D7E14497A825AA52137 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEC27B4597C23E8053AAF16 /* SettingsView.swift */; };
+		D753C3137500E717FA67F3B8 /* OAuthCallbackServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB88A5652DE851FBBEE5740 /* OAuthCallbackServer.swift */; };
+		F67F9FC495334515AA3C0DC5 /* AccountsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296255468B2687211841AFB0 /* AccountsPane.swift */; };
+		F7C340C61599640D4A31ED5B /* CopilotDesktopUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B559E79EF6C64FD1D97F9BED /* CopilotDesktopUsage.swift */; };
+		F84FFFC1FD0014B97B2E9311 /* ClaudeDesktopUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23F12EEA5CB2F2EE32F12E2 /* ClaudeDesktopUsage.swift */; };
+		F89B247FFFB64D26689A5C97 /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D99F146D682145052576AA /* AccountStore.swift */; };
+		F99286CF78A3439576D06CB2 /* PlatformBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB0F433875F20256CFEEB0A /* PlatformBridge.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1105F310F26DA6EC92DF537A /* StatusBarAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarAppDelegate.swift; sourceTree = "<group>"; };
+		296255468B2687211841AFB0 /* AccountsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsPane.swift; sourceTree = "<group>"; };
+		2BB66B3D2D73EBCD00B49681 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		340D75FE53988F42B67F78C3 /* QuotaBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuotaBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		38AECF8962B8C10B5E34FF6D /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
+		3C3D2260E2D5FE66A08C7A76 /* GeminiOAuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiOAuthClient.swift; sourceTree = "<group>"; };
+		419A9E57F030C2DE0D44329F /* ManagementAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagementAPI.swift; sourceTree = "<group>"; };
+		420B0BEC201EA8402D9F5789 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		434520778DA1FE6557A69DA9 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		468CA4D755D47DB021249C84 /* QuotaMenuSnapshotRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaMenuSnapshotRenderer.swift; sourceTree = "<group>"; };
+		58CDB64E60AE71A5BB59A78B /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
+		644AC95C258FE92E88800B17 /* SettingsPanelPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPanelPresentation.swift; sourceTree = "<group>"; };
+		6E528A6B37329FE6D5F2323C /* QuotaBarIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaBarIOSApp.swift; sourceTree = "<group>"; };
+		7CA678189A89543AEF65BED8 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
+		845916853CD35E2F80B820D6 /* CopilotOAuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotOAuthClient.swift; sourceTree = "<group>"; };
+		97BEC117C629630F9DA46229 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		ABEC27B4597C23E8053AAF16 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AEB88A5652DE851FBBEE5740 /* OAuthCallbackServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthCallbackServer.swift; sourceTree = "<group>"; };
+		B23F12EEA5CB2F2EE32F12E2 /* ClaudeDesktopUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeDesktopUsage.swift; sourceTree = "<group>"; };
+		B2C92A1F5AAF538AF681BDD2 /* QuotaBarIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = QuotaBarIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3E6D1AB52AA21B2A90FE984 /* QuotaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaListView.swift; sourceTree = "<group>"; };
+		B559E79EF6C64FD1D97F9BED /* CopilotDesktopUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotDesktopUsage.swift; sourceTree = "<group>"; };
+		CB84C086A950F5214F7F5307 /* QuotaBarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaBarApp.swift; sourceTree = "<group>"; };
+		CE0239990D5DEEC1D4E0563C /* ClaudeOAuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeOAuthClient.swift; sourceTree = "<group>"; };
+		E31C6A56300E5B4DC43FF934 /* QuotaMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaMenuViewModel.swift; sourceTree = "<group>"; };
+		E7F470CFE23E7270E30FF75D /* CodexOAuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexOAuthClient.swift; sourceTree = "<group>"; };
+		E800DA182757796C3A65D7DB /* QuotaMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaMenuView.swift; sourceTree = "<group>"; };
+		F33E42ECA2C5CDB30C4F539D /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
+		F7D99F146D682145052576AA /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
+		F8E3558BAF002442B0AC73CD /* BrandIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandIcon.swift; sourceTree = "<group>"; };
+		FBB05BEB85F0E08A97E4FE9D /* SettingsRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRootView.swift; sourceTree = "<group>"; };
+		FEB0F433875F20256CFEEB0A /* PlatformBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformBridge.swift; sourceTree = "<group>"; };
+		FFC04508189604CF1F42FF4D /* CLICredentialSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLICredentialSync.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		5A8636C74AF030E7412D2DE1 /* QuotaBarIOS */ = {
+			isa = PBXGroup;
+			children = (
+				38AECF8962B8C10B5E34FF6D /* AccountsView.swift */,
+				2BB66B3D2D73EBCD00B49681 /* Color+Hex.swift */,
+				420B0BEC201EA8402D9F5789 /* Info.plist */,
+				6E528A6B37329FE6D5F2323C /* QuotaBarIOSApp.swift */,
+				B3E6D1AB52AA21B2A90FE984 /* QuotaListView.swift */,
+				97BEC117C629630F9DA46229 /* RootView.swift */,
+				FBB05BEB85F0E08A97E4FE9D /* SettingsRootView.swift */,
+			);
+			path = QuotaBarIOS;
+			sourceTree = "<group>";
+		};
+		86EEC0ABD1A556BC49FD78F7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				340D75FE53988F42B67F78C3 /* QuotaBar.app */,
+				B2C92A1F5AAF538AF681BDD2 /* QuotaBarIOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9DE57895E5874A0BFB19956B /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FBD4E7740B0235589DFD664D /* QuotaBar */,
+				5A8636C74AF030E7412D2DE1 /* QuotaBarIOS */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		9DFE3A5EDD8BD856A58F2669 = {
+			isa = PBXGroup;
+			children = (
+				9DE57895E5874A0BFB19956B /* Sources */,
+				86EEC0ABD1A556BC49FD78F7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FBD4E7740B0235589DFD664D /* QuotaBar */ = {
+			isa = PBXGroup;
+			children = (
+				296255468B2687211841AFB0 /* AccountsPane.swift */,
+				F7D99F146D682145052576AA /* AccountStore.swift */,
+				7CA678189A89543AEF65BED8 /* AppError.swift */,
+				F33E42ECA2C5CDB30C4F539D /* AppLogger.swift */,
+				F8E3558BAF002442B0AC73CD /* BrandIcon.swift */,
+				B23F12EEA5CB2F2EE32F12E2 /* ClaudeDesktopUsage.swift */,
+				CE0239990D5DEEC1D4E0563C /* ClaudeOAuthClient.swift */,
+				FFC04508189604CF1F42FF4D /* CLICredentialSync.swift */,
+				E7F470CFE23E7270E30FF75D /* CodexOAuthClient.swift */,
+				B559E79EF6C64FD1D97F9BED /* CopilotDesktopUsage.swift */,
+				845916853CD35E2F80B820D6 /* CopilotOAuthClient.swift */,
+				3C3D2260E2D5FE66A08C7A76 /* GeminiOAuthClient.swift */,
+				419A9E57F030C2DE0D44329F /* ManagementAPI.swift */,
+				434520778DA1FE6557A69DA9 /* Models.swift */,
+				AEB88A5652DE851FBBEE5740 /* OAuthCallbackServer.swift */,
+				FEB0F433875F20256CFEEB0A /* PlatformBridge.swift */,
+				CB84C086A950F5214F7F5307 /* QuotaBarApp.swift */,
+				468CA4D755D47DB021249C84 /* QuotaMenuSnapshotRenderer.swift */,
+				E800DA182757796C3A65D7DB /* QuotaMenuView.swift */,
+				E31C6A56300E5B4DC43FF934 /* QuotaMenuViewModel.swift */,
+				644AC95C258FE92E88800B17 /* SettingsPanelPresentation.swift */,
+				ABEC27B4597C23E8053AAF16 /* SettingsView.swift */,
+				58CDB64E60AE71A5BB59A78B /* SettingsWindowController.swift */,
+				1105F310F26DA6EC92DF537A /* StatusBarAppDelegate.swift */,
+			);
+			path = QuotaBar;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		64EEF90BB697FB3F1F8941B1 /* QuotaBar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51522FC2F7E1BA7C059510A2 /* Build configuration list for PBXNativeTarget "QuotaBar" */;
+			buildPhases = (
+				C301063859D260F7D2CF12F1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuotaBar;
+			packageProductDependencies = (
+			);
+			productName = QuotaBar;
+			productReference = 340D75FE53988F42B67F78C3 /* QuotaBar.app */;
+			productType = "com.apple.product-type.application";
+		};
+		737D76430F7F1BA8D1737E38 /* QuotaBarIOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D78C596B8AD4E9C7ED2A5870 /* Build configuration list for PBXNativeTarget "QuotaBarIOS" */;
+			buildPhases = (
+				7BC15AF3A2543E0A7A07D6E1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuotaBarIOS;
+			packageProductDependencies = (
+			);
+			productName = QuotaBarIOS;
+			productReference = B2C92A1F5AAF538AF681BDD2 /* QuotaBarIOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A3C68224B67F079DDA7707DD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					64EEF90BB697FB3F1F8941B1 = {
+						ProvisioningStyle = Automatic;
+					};
+					737D76430F7F1BA8D1737E38 = {
+						DevelopmentTeam = W7FSTN8532;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 39115C3B940A5770CAE403C4 /* Build configuration list for PBXProject "QuotaBar" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 9DFE3A5EDD8BD856A58F2669;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 86EEC0ABD1A556BC49FD78F7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				64EEF90BB697FB3F1F8941B1 /* QuotaBar */,
+				737D76430F7F1BA8D1737E38 /* QuotaBarIOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7BC15AF3A2543E0A7A07D6E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F89B247FFFB64D26689A5C97 /* AccountStore.swift in Sources */,
+				948ED003F9569BE49F7FDA21 /* AccountsView.swift in Sources */,
+				1AC240985F42113E8009E246 /* AppError.swift in Sources */,
+				409CD5E0C9737A7193A17657 /* AppLogger.swift in Sources */,
+				CAB5C3FE4616E19D21404171 /* CLICredentialSync.swift in Sources */,
+				F84FFFC1FD0014B97B2E9311 /* ClaudeDesktopUsage.swift in Sources */,
+				51C82D694148DB3CBED20914 /* ClaudeOAuthClient.swift in Sources */,
+				6FF17166DD50A3F45DD61D13 /* CodexOAuthClient.swift in Sources */,
+				6D1FE5C9493023002E41B40B /* Color+Hex.swift in Sources */,
+				CAF4367F9EC0008E55007909 /* CopilotDesktopUsage.swift in Sources */,
+				81A0DEEB1C9B37BA1D2B26FE /* CopilotOAuthClient.swift in Sources */,
+				C5BFC34CFB1CACF8A21625CB /* GeminiOAuthClient.swift in Sources */,
+				2A28602FB6C42EA95EB5329D /* ManagementAPI.swift in Sources */,
+				25327C7C0B82F682F35E953C /* Models.swift in Sources */,
+				D753C3137500E717FA67F3B8 /* OAuthCallbackServer.swift in Sources */,
+				283E0FEDFBD836A31E32CBB7 /* PlatformBridge.swift in Sources */,
+				76657DD561D43770FC0577EC /* QuotaBarIOSApp.swift in Sources */,
+				A3F53C2AB8BCC200EA6D08A5 /* QuotaListView.swift in Sources */,
+				C5EA752E4048ABFA45338053 /* QuotaMenuViewModel.swift in Sources */,
+				368EF33A20924E03847F4A15 /* RootView.swift in Sources */,
+				C390F96F1DCD94293AEF7236 /* SettingsRootView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C301063859D260F7D2CF12F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56531A42C2AC99E33D3ABC35 /* AccountStore.swift in Sources */,
+				F67F9FC495334515AA3C0DC5 /* AccountsPane.swift in Sources */,
+				46DBA9CE58B6D6900DC38A64 /* AppError.swift in Sources */,
+				2E5F76B88CC1C685005D79BE /* AppLogger.swift in Sources */,
+				911EFC731ACE29CBE25CAA61 /* BrandIcon.swift in Sources */,
+				BD40B615D4CEDB08E603A7B1 /* CLICredentialSync.swift in Sources */,
+				2F12DEC1CE59A0F77E4262D7 /* ClaudeDesktopUsage.swift in Sources */,
+				6221AA29CADD1A054057BC85 /* ClaudeOAuthClient.swift in Sources */,
+				658F7C162ABF61618037870C /* CodexOAuthClient.swift in Sources */,
+				F7C340C61599640D4A31ED5B /* CopilotDesktopUsage.swift in Sources */,
+				6B56E57987216BF8EFEA6BE1 /* CopilotOAuthClient.swift in Sources */,
+				3A8A47D512EAEEE137A28053 /* GeminiOAuthClient.swift in Sources */,
+				A9268C9798472AA473F8DB02 /* ManagementAPI.swift in Sources */,
+				823E78EE2A300407FD87CB0D /* Models.swift in Sources */,
+				0417CB315C54FBB2129889D2 /* OAuthCallbackServer.swift in Sources */,
+				F99286CF78A3439576D06CB2 /* PlatformBridge.swift in Sources */,
+				1BEE90065A825EFA6A54D299 /* QuotaBarApp.swift in Sources */,
+				0E79DB2F85BB332C354D4ACD /* QuotaMenuSnapshotRenderer.swift in Sources */,
+				78289FDE390676904CD752C2 /* QuotaMenuView.swift in Sources */,
+				6EF50D87ECEB0BA60709877C /* QuotaMenuViewModel.swift in Sources */,
+				7ED4206636ED3548DEB39464 /* SettingsPanelPresentation.swift in Sources */,
+				D45D2D7E14497A825AA52137 /* SettingsView.swift in Sources */,
+				7F50D41F62F7E9E6EE108C8A /* SettingsWindowController.swift in Sources */,
+				AA62E7C6EA3395B47FC62AFE /* StatusBarAppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		14A459CEFDF1042436D15F72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© SemiStack";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.semistack.quotabar;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		1F1F69738C9BB3AD45820D1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W7FSTN8532;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Sources/QuotaBarIOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.semistack.quotabar.ios;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		28E0D945DE7FE846AAFAE9B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W7FSTN8532;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Sources/QuotaBarIOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.semistack.quotabar.ios;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7C529A6241535FE890111B26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© SemiStack";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.semistack.quotabar;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		CB155796C2A7126191568FBC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.10;
+			};
+			name = Release;
+		};
+		FC7C01A7DCB9B995F9C3A0D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.10;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		39115C3B940A5770CAE403C4 /* Build configuration list for PBXProject "QuotaBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FC7C01A7DCB9B995F9C3A0D3 /* Debug */,
+				CB155796C2A7126191568FBC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		51522FC2F7E1BA7C059510A2 /* Build configuration list for PBXNativeTarget "QuotaBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C529A6241535FE890111B26 /* Debug */,
+				14A459CEFDF1042436D15F72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D78C596B8AD4E9C7ED2A5870 /* Build configuration list for PBXNativeTarget "QuotaBarIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28E0D945DE7FE846AAFAE9B3 /* Debug */,
+				1F1F69738C9BB3AD45820D1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A3C68224B67F079DDA7707DD /* Project object */;
+}

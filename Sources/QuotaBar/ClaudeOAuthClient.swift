@@ -219,9 +219,7 @@ struct ClaudeOAuthClient: Sendable {
         let authorizeURL = buildAuthorizeURL(port: port, pkce: pkce, state: state)
 
         Log.info("Claude OAuth: 打开授权页面 \(authorizeURL.absoluteString)")
-        #if canImport(AppKit)
-        await MainActor.run { _ = NSWorkspace.shared.open(authorizeURL) }
-        #endif
+        await MainActor.run { PlatformBridge.openURL(authorizeURL) }
 
         let code = try await callbackServer.waitForCode(expectedState: state)
         Log.info("Claude OAuth: 收到授权码")

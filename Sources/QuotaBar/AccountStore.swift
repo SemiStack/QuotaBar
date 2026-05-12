@@ -4,10 +4,18 @@ actor AccountStore {
     static let shared = AccountStore()
 
     private let storageURL: URL
+    private let legacyStorageURL: URL?
     private var cache: [OAuthAccount]?
 
-    init(storageURL: URL? = nil) {
+    init(storageURL: URL? = nil, legacyStorageURL: URL? = nil) {
         self.storageURL = storageURL ?? Self.defaultStorageURL()
+        if let legacyStorageURL {
+            self.legacyStorageURL = legacyStorageURL
+        } else if storageURL == nil {
+            self.legacyStorageURL = Self.legacyStorageURL()
+        } else {
+            self.legacyStorageURL = nil
+        }
     }
 
     // MARK: - Read
@@ -29,8 +37,36 @@ actor AccountStore {
 
     func addAccount(_ account: OAuthAccount) throws {
         var all = loadedAccounts()
-        guard !all.contains(where: { $0.id == account.id }) else {
-            throw AppError("Account already exists: \(account.id)")
+        if let existingIndex = all.firstIndex(where: { $0.id == account.id }) {
+            let existing = all[existingIndex]
+            let shouldBeActive = account.isActive || existing.isActive
+            let replacement = OAuthAccount(
+                id: account.id,
+                provider: account.provider,
+                email: account.email ?? existing.email,
+                login: account.login ?? existing.login,
+                accessToken: account.accessToken,
+                refreshToken: account.refreshToken ?? existing.refreshToken,
+                expiresAt: account.expiresAt ?? existing.expiresAt,
+                projectId: account.projectId ?? existing.projectId,
+                isActive: shouldBeActive,
+                createdAt: existing.createdAt
+            )
+
+            if shouldBeActive {
+                for i in all.indices where all[i].provider == account.provider {
+                    all[i].isActive = false
+                }
+            }
+
+            all[existingIndex] = replacement
+            try save(all)
+            Log.debug("Account updated: \(replacement.id) provider=\(replacement.provider.rawValue)")
+
+            if replacement.isActive {
+                syncToCLI(account: replacement, allAccounts: all)
+            }
+            return
         }
         var newAccount = account
 
@@ -160,11 +196,22 @@ actor AccountStore {
 
     private func load() throws -> [OAuthAccount] {
         let fm = FileManager.default
-        guard fm.fileExists(atPath: storageURL.path) else { return [] }
-        let data = try Data(contentsOf: storageURL)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(AccountStoreData.self, from: data).accounts
+        if fm.fileExists(atPath: storageURL.path) {
+            let currentAccounts = try decodeAccounts(from: storageURL)
+            if currentAccounts.isEmpty == false {
+                return currentAccounts
+            }
+        }
+
+        if let legacyStorageURL,
+           fm.fileExists(atPath: legacyStorageURL.path) {
+            let accounts = try decodeAccounts(from: legacyStorageURL)
+            try save(accounts)
+            Log.info("迁移旧版账号存储：\(legacyStorageURL.lastPathComponent) -> \(storageURL.lastPathComponent)")
+            return accounts
+        }
+
+        return []
     }
 
     private func save(_ accounts: [OAuthAccount]) throws {
@@ -181,6 +228,7 @@ actor AccountStore {
         try fm.setAttributes([.posixPermissions: 0o600], ofItemAtPath: storageURL.path)
 
         cache = accounts
+        NotificationCenter.default.post(name: .accountStoreDidChange, object: nil)
     }
 
     private static func defaultStorageURL() -> URL {
@@ -190,4 +238,23 @@ actor AccountStore {
             .appendingPathComponent("QuotaBar", isDirectory: true)
             .appendingPathComponent("accounts.json", isDirectory: false)
     }
+
+    private static func legacyStorageURL() -> URL {
+        let baseDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support", isDirectory: true)
+        return baseDirectory
+            .appendingPathComponent("SemiQuotaBar", isDirectory: true)
+            .appendingPathComponent("accounts.json", isDirectory: false)
+    }
+
+    private func decodeAccounts(from url: URL) throws -> [OAuthAccount] {
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(AccountStoreData.self, from: data).accounts
+    }
+}
+
+extension Notification.Name {
+    static let accountStoreDidChange = Notification.Name("AccountStore.didChange")
 }

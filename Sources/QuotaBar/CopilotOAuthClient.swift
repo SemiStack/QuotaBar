@@ -48,7 +48,7 @@ struct CopilotOAuthClient: Sendable {
     private static let deviceCodeURL = URL(string: "https://github.com/login/device/code")!
     private static let tokenURL = URL(string: "https://github.com/login/oauth/access_token")!
     private static let userURL = URL(string: "https://api.github.com/user")!
-    private static let scopes = "read:user copilot"
+    private static let scopes = "read:user user copilot"
 
     let session: URLSession
 

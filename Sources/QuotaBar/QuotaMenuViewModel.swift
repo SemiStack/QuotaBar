@@ -1,5 +1,10 @@
-import AppKit
 import Foundation
+#if canImport(AppKit)
+import AppKit
+#endif
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @MainActor
 final class QuotaMenuViewModel: ObservableObject {
@@ -17,29 +22,21 @@ final class QuotaMenuViewModel: ObservableObject {
     @Published private(set) var providerStates: [QuotaProvider: ProviderRefreshState] = [:]
     @Published private(set) var errorMessage: String?
     @Published private(set) var noticeMessage: String?
-    @Published private(set) var credentialSource = "未配置"
-    @Published private(set) var hasSavedConfiguration = false
     @Published private(set) var activeOAuthProviders: Set<QuotaProvider> = []
     @Published private(set) var oauthAccounts: [OAuthAccount] = []
     @Published private(set) var didLoadInitialConfiguration = false
-    @Published private(set) var isSavingConfiguration = false
     @Published private(set) var isSwitchingAccount = false
     @Published private(set) var preferredSummaryHeight: CGFloat = QuotaPanelMetrics.summaryMinHeight
 
     @Published var isShowingConfiguration = false
-    @Published var apiBaseInput = ""
-    @Published var managementKeyInput = ""
-    @Published var connectionCodeInput = ""
-
-    private let credentialsProvider = PanelCredentialsProvider()
     private let autoRefreshCooldown: TimeInterval = 30
     private let menuOpenAttemptDebounce: TimeInterval = 10
     private var refreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
     private var lastMenuOpenRefreshAt: Date?
     private var providerTasks: [QuotaProvider: Task<Void, Never>] = [:]
-    private var cachedManagementContext: ManagementContextState?
     private var noticeDismissTask: Task<Void, Never>?
+    private var accountStoreObserver: NSObjectProtocol?
 
     init() {
         providerOrder = Self.loadProviderOrder()
@@ -47,7 +44,20 @@ final class QuotaMenuViewModel: ObservableObject {
         for provider in QuotaProvider.allCases {
             providerStates[provider] = ProviderRefreshState()
         }
-        Task { await reloadConfigurationState() }
+        accountStoreObserver = NotificationCenter.default.addObserver(
+            forName: .accountStoreDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                await self?.reloadOAuthState()
+            }
+        }
+        Task {
+            await reloadOAuthState()
+            didLoadInitialConfiguration = true
+            logSourceAvailability()
+        }
     }
 
     var allCards: [QuotaCard] {
@@ -59,11 +69,11 @@ final class QuotaMenuViewModel: ObservableObject {
     }
 
     var hasAnyAvailableSource: Bool {
-        hasSavedConfiguration || !activeOAuthProviders.isEmpty
+        !activeOAuthProviders.isEmpty
     }
 
     var connectedSourceCount: Int {
-        (hasSavedConfiguration ? 1 : 0) + activeOAuthProviders.count
+        activeOAuthProviders.count
     }
 
     func updateSummaryPreferredHeight(_ height: CGFloat) {
@@ -204,84 +214,6 @@ final class QuotaMenuViewModel: ObservableObject {
         providerStates[provider] ?? ProviderRefreshState()
     }
 
-    func presentConfiguration() {
-        Task {
-            await reloadConfigurationState()
-            isShowingConfiguration = true
-        }
-    }
-
-    func dismissConfiguration() {
-        guard hasAnyAvailableSource else { return }
-        managementKeyInput = ""
-        connectionCodeInput = ""
-        errorMessage = nil
-        noticeMessage = nil
-        isShowingConfiguration = false
-    }
-
-    func saveConfiguration() {
-        guard !isSavingConfiguration else { return }
-        isSavingConfiguration = true
-        errorMessage = nil
-        noticeMessage = nil
-        cancelRefresh()
-
-        let apiBase = apiBaseInput
-        let managementKey = managementKeyInput
-        Task { [weak self] in
-            await self?.runSaveConfiguration(apiBase: apiBase, managementKey: managementKey)
-        }
-    }
-
-    func importConfigurationFromBrowser() {
-        guard !isSavingConfiguration else { return }
-        isSavingConfiguration = true
-        errorMessage = nil
-        noticeMessage = nil
-        cancelRefresh()
-
-        Task { [weak self] in
-            await self?.runImportFromBrowser()
-        }
-    }
-
-    func copyConnectionCode() {
-        guard !isSavingConfiguration else { return }
-        isSavingConfiguration = true
-        errorMessage = nil
-        noticeMessage = nil
-
-        Task { [weak self] in
-            await self?.runCopyConnectionCode()
-        }
-    }
-
-    func importConnectionCode() {
-        guard !isSavingConfiguration else { return }
-        isSavingConfiguration = true
-        errorMessage = nil
-        noticeMessage = nil
-        cancelRefresh()
-
-        let code = connectionCodeInput
-        Task { [weak self] in
-            await self?.runImportConnectionCode(code)
-        }
-    }
-
-    func clearSavedConfiguration() {
-        guard !isSavingConfiguration else { return }
-        isSavingConfiguration = true
-        errorMessage = nil
-        noticeMessage = nil
-        cancelRefresh()
-
-        Task { [weak self] in
-            await self?.runClearConfiguration()
-        }
-    }
-
     func cancelRefresh() {
         if let refreshTask {
             Log.info("取消当前刷新任务")
@@ -343,39 +275,14 @@ final class QuotaMenuViewModel: ObservableObject {
         do {
             try Task.checkCancellation()
 
-            let draft = await credentialsProvider.loadConfigurationDraft()
-            applyConfigurationDraft(draft)
-
-            // Refresh OAuth account availability
-            let allAccounts = await AccountStore.shared.allAccounts()
-            oauthAccounts = allAccounts
-            activeOAuthProviders = Set(allAccounts.filter(\.isActive).map(\.provider))
+            await reloadOAuthState()
 
             try Task.checkCancellation()
 
-            // Copilot — fully independent
             launchProviderRefresh(.copilot)
-
-            // Claude — uses imported session from AccountStore
             launchProviderRefresh(.claude)
-
-            try Task.checkCancellation()
-
-            // Management context — shared dependency for Codex and Gemini
-            // Use try? so that missing management config doesn't block OAuth-based Gemini refresh
-            let management: ManagementContextState
-            if draft.hasManagementKey {
-                management = (try? await loadManagementContext(hasSavedConfiguration: true)) ?? .unavailable
-            } else {
-                management = .unavailable
-            }
-            cachedManagementContext = management
-
-            try Task.checkCancellation()
-
-            // Codex and Gemini — depend on management context
-            launchProviderRefresh(.codex, management: management)
-            launchProviderRefresh(.gemini, management: management)
+            launchProviderRefresh(.codex)
+            launchProviderRefresh(.gemini)
 
             // Wait for all provider tasks to complete
             for provider in QuotaProvider.allCases {
@@ -410,14 +317,11 @@ final class QuotaMenuViewModel: ObservableObject {
         } catch {
             let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
             errorMessage = message
-            if Self.shouldPresentConfiguration(for: message) {
-                isShowingConfiguration = true
-            }
             Log.error("刷新失败：\(message)")
         }
     }
 
-    private func launchProviderRefresh(_ provider: QuotaProvider, management: ManagementContextState? = nil) {
+    private func launchProviderRefresh(_ provider: QuotaProvider) {
         providerTasks[provider]?.cancel()
 
         providerTasks[provider] = Task { [weak self] in
@@ -434,19 +338,7 @@ final class QuotaMenuViewModel: ObservableObject {
                 case .codex:
                     cards = try await self.loadCodexCards()
                 case .gemini:
-                    let mgmt: ManagementContextState
-                    if let m = management {
-                        mgmt = m
-                    } else {
-                        do {
-                            mgmt = try await self.resolveManagementContext()
-                        } catch is CancellationError {
-                            throw CancellationError()
-                        } catch {
-                            mgmt = .unavailable
-                        }
-                    }
-                    cards = try await self.loadGeminiCards(management: mgmt)
+                    cards = try await self.loadGeminiCards()
                 }
 
                 self.applyProviderCards(provider, cards: cards)
@@ -500,201 +392,15 @@ final class QuotaMenuViewModel: ObservableObject {
         lastRefreshedAt = providerStates.values.compactMap(\.lastRefreshedAt).max()
     }
 
-    private func resolveManagementContext() async throws -> ManagementContextState {
-        if let cached = cachedManagementContext {
-            return cached
-        }
-        let draft = await credentialsProvider.loadConfigurationDraft()
-        let context = try await loadManagementContext(hasSavedConfiguration: draft.hasManagementKey)
-        cachedManagementContext = context
-        return context
-    }
-
-    private func runSaveConfiguration(apiBase: String, managementKey: String) async {
-        defer { isSavingConfiguration = false }
-
-        do {
-            let credentials = try await credentialsProvider.prepareManualConfiguration(apiBase: apiBase, managementKey: managementKey)
-            let client = ManagementAPIClient(credentials: credentials)
-            _ = try await client.fetchAuthFiles()
-            try await credentialsProvider.persist(credentials)
-
-            managementKeyInput = ""
-            credentialSource = ResolvedCredentials.Source.savedConfiguration.displayName
-            errorMessage = nil
-            setNotice("连接已保存。")
-            cachedManagementContext = nil
-            await reloadConfigurationState()
-            isShowingConfiguration = false
-            Log.info("手动配置保存成功：\(credentials.apiBase?.absoluteString ?? "-")")
-            manualRefresh()
-        } catch {
-            let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            errorMessage = message
-            isShowingConfiguration = true
-            Log.error("保存配置失败：\(message)")
-        }
-    }
-
-    private func runImportFromBrowser() async {
-        defer { isSavingConfiguration = false }
-
-        do {
-            let credentials = try await credentialsProvider.importFromChrome()
-            let client = ManagementAPIClient(credentials: credentials)
-            _ = try await client.fetchAuthFiles()
-            try await credentialsProvider.persist(credentials)
-
-            apiBaseInput = credentials.apiBase?.absoluteString ?? apiBaseInput
-            managementKeyInput = ""
-            credentialSource = ResolvedCredentials.Source.savedConfiguration.displayName
-            errorMessage = nil
-            setNotice("已从浏览器导入并保存。")
-            cachedManagementContext = nil
-            await reloadConfigurationState()
-            isShowingConfiguration = false
-            Log.info("浏览器导入配置成功并已保存")
-            manualRefresh()
-        } catch {
-            let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            errorMessage = message
-            isShowingConfiguration = true
-            Log.error("浏览器导入失败：\(message)")
-        }
-    }
-
-    private func runCopyConnectionCode() async {
-        defer { isSavingConfiguration = false }
-
-        do {
-            let code = try await credentialsProvider.exportConnectionCode()
-            let pasteboard = NSPasteboard.general
-            pasteboard.clearContents()
-            pasteboard.setString(code, forType: .string)
-            setNotice("连接码已复制。")
-            Log.info("连接码已复制到剪贴板")
-        } catch {
-            let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            errorMessage = message
-            Log.error("复制连接码失败：\(message)")
-        }
-    }
-
-    private func runImportConnectionCode(_ code: String) async {
-        defer { isSavingConfiguration = false }
-
-        do {
-            let credentials = try await credentialsProvider.importConnectionCode(code)
-            let client = ManagementAPIClient(credentials: credentials)
-            _ = try await client.fetchAuthFiles()
-            try await credentialsProvider.persist(credentials)
-
-            apiBaseInput = credentials.apiBase?.absoluteString ?? apiBaseInput
-            managementKeyInput = ""
-            connectionCodeInput = ""
-            credentialSource = credentials.source.displayName
-            errorMessage = nil
-            setNotice("连接码导入成功。")
-            cachedManagementContext = nil
-            await reloadConfigurationState()
-            isShowingConfiguration = false
-            Log.info("连接码导入成功")
-            manualRefresh()
-        } catch {
-            let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            errorMessage = message
-            isShowingConfiguration = true
-            Log.error("导入连接码失败：\(message)")
-        }
-    }
-
-    private func runClearConfiguration() async {
-        defer { isSavingConfiguration = false }
-
-        do {
-            try await credentialsProvider.clearSavedConfiguration()
-            copilotCards = []
-            codexCards = []
-            claudeCards = []
-            geminiCards = []
-            rebuildSections()
-            credentialSource = "未配置"
-            managementKeyInput = ""
-            connectionCodeInput = ""
-            errorMessage = nil
-            setNotice("已清空本地连接配置。")
-            cachedManagementContext = nil
-            for provider in QuotaProvider.allCases {
-                providerStates[provider] = ProviderRefreshState()
-            }
-            syncDerivedState()
-            await reloadConfigurationState()
-            isShowingConfiguration = !hasAnyAvailableSource
-
-            if hasAnyAvailableSource {
-                manualRefresh()
-            } else {
-                lastRefreshedAt = nil
-            }
-        } catch {
-            let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            errorMessage = message
-            Log.error("清空配置失败：\(message)")
-        }
-    }
-
-    private func reloadConfigurationState() async {
-        let draft = await credentialsProvider.loadConfigurationDraft()
-        applyConfigurationDraft(draft)
-        didLoadInitialConfiguration = true
-
+    private func reloadOAuthState() async {
         let allAccounts = await AccountStore.shared.allAccounts()
         oauthAccounts = allAccounts
         activeOAuthProviders = Set(allAccounts.filter(\.isActive).map(\.provider))
-    }
-
-    private func applyConfigurationDraft(_ draft: PanelConfigurationDraft) {
-        apiBaseInput = draft.apiBase
-        hasSavedConfiguration = draft.hasManagementKey
-
-        if draft.hasManagementKey {
-            credentialSource = credentialSource == ResolvedCredentials.Source.chromeImport.displayName
-                || credentialSource == ResolvedCredentials.Source.importedConnectionCode.displayName
-                ? credentialSource
-                : ResolvedCredentials.Source.savedConfiguration.displayName
-        } else {
-            credentialSource = "未配置"
-        }
-
         logSourceAvailability()
     }
 
     private func logSourceAvailability() {
-        Log.debug("来源状态：Codex=\(hasSavedConfiguration) OAuth=\(activeOAuthProviders)")
-    }
-
-    private func loadManagementContext(hasSavedConfiguration: Bool) async throws -> ManagementContextState {
-        guard hasSavedConfiguration else {
-            Log.info("跳过管理面板读取：未配置管理面板")
-            credentialSource = "未配置"
-            return .unavailable
-        }
-
-        do {
-            let credentials = try await credentialsProvider.resolve()
-            credentialSource = credentials.source.displayName
-            Log.info("凭证来源：\(credentials.source.displayName)")
-
-            let client = ManagementAPIClient(credentials: credentials)
-            let files = try await client.fetchAuthFiles()
-            return .ready(ManagementRefreshContext(client: client, files: files))
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch {
-            let description = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            Log.error("管理面板读取失败：\(description)")
-            return .failed(description)
-        }
+        Log.debug("OAuth 来源状态：\(activeOAuthProviders)")
     }
 
     private func loadCodexCards() async throws -> [QuotaCard] {
@@ -863,7 +569,7 @@ final class QuotaMenuViewModel: ObservableObject {
         return updated
     }
 
-    private func loadGeminiCards(management: ManagementContextState) async throws -> [QuotaCard] {
+    private func loadGeminiCards() async throws -> [QuotaCard] {
         // OAuth accounts only — no Management API fallback for Gemini.
         if let cards = try await loadOAuthCards(
             provider: .gemini,
@@ -918,14 +624,6 @@ final class QuotaMenuViewModel: ObservableObject {
         return Date().timeIntervalSince(lastMenuOpenRefreshAt) < menuOpenAttemptDebounce
     }
 
-    private static func shouldPresentConfiguration(for message: String) -> Bool {
-        let normalized = message.lowercased()
-        return normalized.contains("请先配置")
-            || normalized.contains("management key")
-            || normalized.contains("http 401")
-            || normalized.contains("http 403")
-    }
-
     private nonisolated static func cardSort(lhs: QuotaCard, rhs: QuotaCard) -> Bool {
         if lhs.isCodexUnavailable != rhs.isCodexUnavailable {
             return rhs.isCodexUnavailable
@@ -960,17 +658,6 @@ final class QuotaMenuViewModel: ObservableObject {
             errorMessage: message
         )
     }
-}
-
-private struct ManagementRefreshContext: Sendable {
-    let client: ManagementAPIClient
-    let files: [AuthFile]
-}
-
-private enum ManagementContextState: Sendable {
-    case unavailable
-    case ready(ManagementRefreshContext)
-    case failed(String)
 }
 
 private enum RefreshReason: String {
